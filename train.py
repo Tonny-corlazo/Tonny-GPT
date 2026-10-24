@@ -1,4 +1,4 @@
-# train.py — Kaggle version
+# train.py 
 
 import os
 import shutil
@@ -14,10 +14,9 @@ from model import BabyGPT
 # PATHS
 # ============================================================
 
-# Change this to match your dataset folder name
 DATASET_DIR = "/kaggle/input/tony-Baby-gpt"
 
-# Working directory (fast, writable, persists for this session)
+
 WORKDIR = "/kaggle/working"
 
 LOCAL_BIN = f"{WORKDIR}/encoded_corpus.bin"
@@ -54,9 +53,6 @@ print("🚀 TRAINING BABYGPT WITH GPT-2 TOKENIZER")
 print("=" * 60)
 
 
-# ============================================================
-# 1. ENSURE .bin EXISTS LOCALLY
-# ============================================================
 
 os.makedirs(WORKDIR, exist_ok=True)
 
@@ -79,7 +75,7 @@ else:
 
 
 # ============================================================
-# 2. LOAD ENCODED CORPUS
+#  LOAD ENCODED CORPUS
 # ============================================================
 
 print(f"\n📚 Loading encoded training data from: {LOCAL_BIN}")
@@ -91,7 +87,7 @@ print(f"💾 Encoded corpus size: {os.path.getsize(LOCAL_BIN) / (1024 * 1024):.2
 
 
 # ============================================================
-# 3. TRAIN / VALIDATION SPLIT
+# TRAIN / VALIDATION SPLIT
 # ============================================================
 
 n = int(0.9 * len(data))
@@ -103,7 +99,7 @@ print(f"📊 Val:   {len(val_data):,} tokens")
 
 
 # ============================================================
-# 4. GET BATCH
+# GET BATCH
 # ============================================================
 
 def get_batch(split):
@@ -120,10 +116,10 @@ def get_batch(split):
 
 
 # ============================================================
-# 5. INITIALIZE MODEL
+# INITIALIZE MODEL
 # ============================================================
 
-print("\n🧠 Initializing model...")
+print("\n Initializing model...")
 
 model = BabyGPT()
 model.to(device)
@@ -145,10 +141,10 @@ if os.path.exists(LOCAL_CKPT):
     checkpoint_path = LOCAL_CKPT
 elif os.path.exists(SOURCE_CKPT):
     checkpoint_path = SOURCE_CKPT
-    print(f"\n📂 Local checkpoint not found, using dataset copy")
+    print(f"\n Local checkpoint not found, using dataset copy")
 
 if checkpoint_path:
-    print(f"\n📂 Found checkpoint: {checkpoint_path}")
+    print(f"\n Found checkpoint: {checkpoint_path}")
 
     checkpoint = torch.load(checkpoint_path, map_location=device)
     model.load_state_dict(checkpoint["model_state_dict"])
@@ -165,7 +161,7 @@ if checkpoint_path:
     if checkpoint_path == SOURCE_CKPT and not os.path.exists(LOCAL_CKPT):
         try:
             shutil.copy2(SOURCE_CKPT, LOCAL_CKPT)
-            print(f"📥 Copied checkpoint to working dir: {LOCAL_CKPT}")
+            print(f" Copied checkpoint to working dir: {LOCAL_CKPT}")
         except Exception as e:
             print(f"⚠️ Could not stage local checkpoint: {e}")
 else:
@@ -173,7 +169,7 @@ else:
 
 
 # ============================================================
-# 7. VALIDATION HELPER
+# VALIDATION HELPER
 # ============================================================
 
 @torch.no_grad()
@@ -228,7 +224,7 @@ for step in range(start_iter, max_iters):
             "loss": loss.item(),
         }
 
-        # Save to /kaggle/working/ — persistent for this session
+        # Save to /kaggle/working/
         safe_save(checkpoint, LOCAL_CKPT)
         print(f"💾 Saved checkpoint at step {step} → {LOCAL_CKPT}")
 
