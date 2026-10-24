@@ -1,4 +1,4 @@
-# prepare_finetune.py — The Final Boss Version
+# prepare_finetune.py
 import os
 import re
 import json
@@ -48,7 +48,7 @@ def extract_pairs(text):
     return best_pairs
 
 # --- 1. EXTRACT LOCAL FILES ---
-print("📖 Extracting from local files...")
+print(" Extracting from local files...")
 all_pairs = []
 seen = set()
 
@@ -71,7 +71,7 @@ for path in CONVO_FILES:
         if len(all_pairs) >= MAX_PAIRS: break
 
 # --- 2. ADD DOLLY WITH ERROR HANDLING ---
-print("🐕 Adding Dolly-15k...")
+print(" Adding Dolly-15k...")
 try:
     dolly = load_dataset("databricks/databricks-dolly-15k", split="train")
     dolly_count = 0
