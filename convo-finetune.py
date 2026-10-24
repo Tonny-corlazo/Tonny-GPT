@@ -1,4 +1,4 @@
-# finetune.py — The CTO-Approved Version
+# convo-finetune.py 
 import os, json, torch, torch.nn as nn
 from torch.utils.data import Dataset, DataLoader, random_split
 from tokenizer import GPTTokenizer
@@ -51,23 +51,23 @@ class InstructDataset(Dataset):
         x = torch.tensor(full_ids[:-1], dtype=torch.long)
         y = torch.tensor(full_ids[1:], dtype=torch.long)
         
-        # --- THE PERFECT MASKING LOGIC ---
+        # ---  MASKING LOGIC ---
         start_of_response = len(prompt_ids) - 1
         
         # 1. Mask the prompt (Human)
         if start_of_response > 0:
             y[:start_of_response] = -100
             
-        # 2. Mask ONLY the padding, preserve the EOS of the response!
+        # 2. Mask ONLY the padding, preserve the EOS of the response
         if padding_length > 0:
-            # The padding starts after the prompt + response - 1 (for the shift)
+            # The padding starts after the prompt + response - 1 
             pad_start_idx = len(prompt_ids) + len(response_ids) - 1
             if pad_start_idx < self.max_length:
                 y[pad_start_idx:] = -100
         
         return x, y
 
-# --- SETUP ---
+
 print("📂 Loading data...")
 dataset = InstructDataset(DATA_JSONL)
 train_size = int(0.95 * len(dataset))
