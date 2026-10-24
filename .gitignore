@@ -1,0 +1,8 @@
+*.pth
+__pycache__/
+venv/
+Datasets/
+*.bin
+training_corpus.txt
+*.zip
+models/
