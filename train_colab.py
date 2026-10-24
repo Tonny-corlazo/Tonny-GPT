@@ -1,4 +1,4 @@
-# train.py
+# train_colab.py
 
 import os
 import shutil
@@ -14,11 +14,10 @@ from model import BabyGPT
 # PATHS
 # ============================================================
 
-# Local (fast) paths inside the runtime
 LOCAL_BIN = "/content/data/encoded_corpus.bin"
 LOCAL_CKPT = "/content/data/checkpoint.pth"
 
-# Drive (persistent) paths
+# Drive paths
 DRIVE_DIR = "/content/drive/MyDrive/Babay GPT"
 DRIVE_BIN = f"{DRIVE_DIR}/encoded_corpus.bin"
 DRIVE_CKPT = f"{DRIVE_DIR}/checkpoint.pth"
@@ -47,9 +46,7 @@ print("🚀 TRAINING BABYGPT WITH GPT-2 TOKENIZER")
 print("=" * 60)
 
 
-# ============================================================
-# 1. ENSURE .bin EXISTS LOCALLY (copy from Drive if needed)
-# ============================================================
+
 
 os.makedirs(os.path.dirname(LOCAL_BIN), exist_ok=True)
 
@@ -75,11 +72,11 @@ else:
 # 2. LOAD ENCODED CORPUS
 # ============================================================
 
-print(f"\n📚 Loading encoded training data from: {LOCAL_BIN}")
+print(f"\n Loading encoded training data from: {LOCAL_BIN}")
 
 data = np.memmap(LOCAL_BIN, dtype=np.uint16, mode="r")
 
-print(f"✅ Loaded {len(data):,} tokens")
+print(f" Loaded {len(data):,} tokens")
 print(f"💾 Encoded corpus size: {os.path.getsize(LOCAL_BIN) / (1024 * 1024):.2f} MB")
 
 
@@ -91,8 +88,8 @@ n = int(0.9 * len(data))
 train_data = data[:n]
 val_data = data[n:]
 
-print(f"📊 Train: {len(train_data):,} tokens")
-print(f"📊 Val:   {len(val_data):,} tokens")
+print(f" Train: {len(train_data):,} tokens")
+print(f" Val:   {len(val_data):,} tokens")
 
 
 # ============================================================
@@ -116,7 +113,7 @@ def get_batch(split):
 # 5. INITIALIZE MODEL
 # ============================================================
 
-print("\n🧠 Initializing model...")
+print("\n Initializing model...")
 
 model = BabyGPT()
 model.to(device)
@@ -138,10 +135,10 @@ if os.path.exists(LOCAL_CKPT):
     checkpoint_path = LOCAL_CKPT
 elif os.path.exists(DRIVE_CKPT):
     checkpoint_path = DRIVE_CKPT
-    print(f"\n📂 Local checkpoint not found, using Drive copy")
+    print(f"\n Local checkpoint not found, using Drive copy")
 
 if checkpoint_path:
-    print(f"\n📂 Found checkpoint: {checkpoint_path}")
+    print(f"\n Found checkpoint: {checkpoint_path}")
 
     checkpoint = torch.load(checkpoint_path, map_location=device)
     model.load_state_dict(checkpoint["model_state_dict"])
@@ -151,8 +148,8 @@ if checkpoint_path:
     last_loss = checkpoint["loss"]
 
     print(f"✅ Resumed from step {start_iter}")
-    print(f"📊 Last loss: {last_loss:.4f}")
-    print(f"🎯 Continuing to step {max_iters}")
+    print(f" Last loss: {last_loss:.4f}")
+    print(f" Continuing to step {max_iters}")
 
     # If we loaded from Drive, also stage it locally for fast saves
     if checkpoint_path == DRIVE_CKPT and not os.path.exists(LOCAL_CKPT):
